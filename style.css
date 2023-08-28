@@ -13,17 +13,25 @@ li {
 /* Basic styling */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #90abfe;
+  background-color: #3b9b53;
 }
 
-header,
+header {
+  margin: 0 auto;
+  padding: 30px;
+}
+
+header p {
+  color: #ffffff;
+}
+
 nav,
 section,
 footer {
   max-width: 800px;
   margin: 0 auto;
   padding: 15px;
-  background-color: #d1dfff;
+  background-color: #7bd586;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   border-radius: 10px;
@@ -32,7 +40,7 @@ footer {
 header h1 {
   font-size: 50px;
   margin-bottom: 10px;
-  color: #000000;
+  color: #ffffff;
 }
 
 nav ul {
@@ -46,49 +54,56 @@ nav ul li {
 
 nav a {
   text-decoration: none;
-  color: #000000;
+  color: #ffffff;
   font-weight: bold;
   transition: color 0.3s;
 }
 
 nav a:hover {
-  color: #000000;
+  color: #ffffff;
 }
 
 section p {
   font-size: 15px;
+  color: #ffffff;
 }
 
 section h2 {
   font-size: 26px;
   margin-bottom: 15px;
-  color: #000000;
+  color: #ffffff;
+}
+
+.school h3 {
+  color: #ffffff;
 }
 
 .school p {
   font-size: 15px;
+  color: #ffffff;
 }
 
 .project {
   margin-bottom: 25px;
   padding: 15px;
-  background-color: #e1e6fe;
+  background-color: #349d3a;
   border-radius: 5px;
 }
 
 .project h3 {
   font-size: 20px;
   margin-bottom: 10px;
-  color: #000000;
+  color: #ffffff;
 }
 
 .project p {
   font-size: 15px;
-  color: #00054d;
+  color: #ffffff;
 }
 
 .cont {
   font-size: 15px;
+  color: #ffffff;
   list-style: none;
   padding-left: 20px;
 }
@@ -100,13 +115,13 @@ section h2 {
 
 footer {
   text-align: center;
-  color: #000000;
+  color: #ffffff;
   font-size: 14px;
   margin-top: 20px;
 }
 
 footer a {
-  color: #000000;
+  color: #ffffff;
 }
 
 footer a:hover {
