@@ -1,5 +1,11 @@
 /* Reset default margin and padding */
-body, h1, h2, h3, p, ul, li {
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+li {
   margin: 0;
   padding: 0;
 }
@@ -10,10 +16,13 @@ body {
   background-color: #90abfe;
 }
 
-header, nav, section, footer {
+header,
+nav,
+section,
+footer {
   max-width: 800px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 15px;
   background-color: #d1dfff;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -46,10 +55,18 @@ nav a:hover {
   color: #000000;
 }
 
+section p {
+  font-size: 15px;
+}
+
 section h2 {
   font-size: 26px;
   margin-bottom: 15px;
   color: #000000;
+}
+
+.school p {
+  font-size: 15px;
 }
 
 .project {
@@ -66,17 +83,19 @@ section h2 {
 }
 
 .project p {
-  font-size: 16px;
+  font-size: 15px;
   color: #00054d;
 }
+
 .cont {
+  font-size: 15px;
   list-style: none;
-  padding-left: 20px; /* Adjust the value to control the amount of indent */
+  padding-left: 20px;
 }
 
 .cont li::before {
-  content: "\2022"; /* Bullet character (•) */
-  margin-right: 10px; /* Space between bullet and list item */
+  content: "\2022";
+  margin-right: 10px;
 }
 
 footer {
