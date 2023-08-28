@@ -69,6 +69,15 @@ section h2 {
   font-size: 16px;
   color: #00054d;
 }
+.cont {
+  list-style: none;
+  padding-left: 20px; /* Adjust the value to control the amount of indent */
+}
+
+.cont li::before {
+  content: "\2022"; /* Bullet character (•) */
+  margin-right: 10px; /* Space between bullet and list item */
+}
 
 footer {
   text-align: center;
