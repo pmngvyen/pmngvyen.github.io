@@ -25,7 +25,15 @@ header p {
   color: #ffffff;
 }
 
-nav,
+nav {
+  max-width: 1600px;
+  padding: 15px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  float: right;
+  text-align: right;
+}
+
 section,
 footer {
   max-width: 1350px;
