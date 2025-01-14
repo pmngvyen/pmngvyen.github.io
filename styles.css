@@ -1,0 +1,399 @@
+/* Reset and basic styling */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f7f7f7;
+    color: #333;
+    line-height: 1.6;
+}
+
+h1, h2, h3, h4{
+    font-weight: 500;
+}
+
+/* Container */
+.container {
+    width: 80%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+.header {
+    position: relative;
+    height: 500px;
+    background-image: url('images/head.png'); /* Replace with your image */
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 0;
+    overflow: hidden;
+}
+
+.header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #003e6dac; /* Tint color with transparency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.header h1 {
+    font-size: 100px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.tagline {
+    font-size: 25px;
+    font-weight: 300;
+}
+
+/* About Me Section */
+.about-me {
+    padding: 40px 0;
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture {
+    margin-right: 70px; /* Space between image and text */
+}
+
+.profile-picture img {
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 5px solid #003e6d; /* Optional: adds a border around the image */
+}
+
+.profile-picture img:hover {
+    border-color: #005e8c;
+    transform: scale(1.05);
+    transition: all 0.3s ease;
+}
+
+.bio {
+    max-width: 1500px;
+}
+
+.bio h2 {
+    font-size: 36px;
+    color: #003e6d;
+    margin-bottom: 15px;
+}
+
+.bio p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .profile-info {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .profile-picture {
+        margin-right: 0;
+        margin-bottom: 20px;
+    }
+}
+
+/* Experience */
+.experience {
+    background-color: #f0f0f0;
+    padding: 40px 0;
+}
+
+.experience h2 {
+    font-size: 36px;
+    color: #333;
+}
+
+.experience-item {
+    margin-bottom: 30px;
+}
+
+.experience-item h3 {
+    font-size: 24px;
+    color: #003e6d;
+}
+.experience-item h4{
+    font-size: 20px;
+    color: #777;
+    font-weight: 400;
+}
+
+.duration {
+    font-weight: 300;
+    color: #777;
+}
+
+ul {
+    list-style-type: none;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+ul li {
+    margin: 8px 0;
+}
+
+ul li {
+    position: relative;
+    padding-left: 25px;
+}
+
+ul li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #003e6d;
+}
+
+
+/* Education */
+.education {
+    padding: 40px 0;
+}
+
+.education h2 {
+    font-size: 36px;
+    color: #333;
+}
+
+.education h4{
+    font-size: 20px;
+    color: #777;
+    font-weight: 400;
+}
+
+.education-item {
+    margin-bottom: 30px;
+}
+
+.education-item h3 {
+    font-size: 24px;
+    color: #003e6d;
+}
+
+p {
+    font-size: 16px;
+    font-weight: 300;
+}
+
+/* Projects */
+.projects {
+    background-color: #fff;
+    padding: 40px 0;
+}
+
+.projects h2 {
+    font-size: 36px;
+    color: #333;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Use Flexbox for project items */
+.project-item {
+    display: flex;
+    margin-bottom: 40px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    flex: 1 1 48%;  /* Allow the items to grow/shrink and take 48% of the container */
+    margin-right: 4%; /* Add a small gap between items */
+}
+
+.project-item img {
+    width: 40%;
+    height: 170px;
+    object-fit: cover;
+}
+
+.project-info {
+    padding: 30px;
+    width: 768px;
+}
+
+.project-info h3 {
+    font-size: 24px;
+    color: #003e6d;
+}
+
+.project-info p {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.project-info a {
+    color: #003e6d;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.project-info a:hover {
+    text-decoration: underline;
+}
+
+.project-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+/* Make the project items stack on smaller screens */
+@media screen and (max-width: 768px) {
+    .project-item {
+        flex-direction: column;  /* Stack the image and text vertically */
+        margin-right: 0;         /* Remove the right margin */
+        width: 100%;             /* Make each item take full width */
+    }
+
+    .project-item img {
+        width: 100%;  /* Make the image take the full width */
+        height: auto; /* Maintain aspect ratio */
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top of everything */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.7); /* Black with opacity */
+    overflow: auto; /* Enable scroll if needed */
+    padding-top: 60px; /* Position the modal */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; /* Center the modal */
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%; /* Adjust width as needed */
+    max-width: 800px;
+}
+
+/* Modal Links Styles */
+.modal-links {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.modal-links a {
+    color: #003e6d;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.modal-links a:hover {
+    text-decoration: underline;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+
+#modalImageContainer {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#modalImage {
+    max-width: 100%; /* Ensure the image doesn't overflow */
+    height: auto;
+    border-radius: 10px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+#modalTitle {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+#modalDescription {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+
+/* Contact Section */
+.contact {
+    background-color: #f0f0f0;
+    padding: 40px 0;
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.contact p {
+    margin-bottom: 20px;
+}
+
+.contact .contact-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;  /* Space between the icons */
+    flex-wrap: wrap;
+}
+
+.contact .icon {
+    font-size: 40px;    /* Icon size */
+    color: #003e6d;     /* Icon color */
+    transition: transform 0.3s ease, color 0.3s ease;  /* Smooth hover transition */
+}
+
+.contact .icon:hover {
+    transform: scale(1.1); /* Slightly enlarge the icon on hover */
+    color: #0077b5;         /* Change color on hover */
+}
+
+/* Media query for smaller screens */
+@media screen and (max-width: 768px) {
+    .contact .icon {
+        font-size: 30px;  /* Smaller icons on mobile */
+    }
+}

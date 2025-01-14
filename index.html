@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paul Nguyen - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="header">
+        <div class="header-overlay">
+            <div class="container">
+                <h1><b>Paul Nguyen</b></h1>
+                <p class="tagline">Engineer | Student | Problem Solver</p>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- About Me Section -->
+    <section class="about-me" id="about">
+        <div class="container">
+            <div class="profile-info">
+                <div class="profile-picture">
+                    <img src="images/face.png" alt="Your Photo">
+                </div>
+                <div class="bio">
+                    <h2>About Me</h2>
+                    <p>Hello, My name is Paul! Aspiring to become a mechanical and computer engineer towards aerospace applications, I am driven by my deep passion for flight and space exploration. Alongside my technical abilities, I hold a love for design, drawing, and digital marketing, effectively communicating ideas to diverse audiences.</p>
+                    <p>In my free time, I like to play guitar and piano. I also like to read, to which I am currently reading <em>The Stranger</em> by Albert Camus. I am teaching myself to web develop. I am trying my best to learn to bake. I try to make it to church every Sunday.</p>
+                </div>
+            </div>
+        </div>
+    </section>       
+
+    <!-- Experience Section -->
+    <section class="experience" id="experience">
+        <div class="container">
+            <h2>Experience</h2>
+            <div class="experience-item">
+                <h3>IS&T Support Specialist - LETS</h3>
+                <h4>Boston University IS&T</h4>
+                <p class="duration">Jan. 2025 - Present</p>
+                <ul>
+                    <li>Provide on-site AV/IT support for Registrar classrooms across Charles River and Fenway campuses.</li>
+                    <li>Support the University's teaching and learning mission through technology services.</li>
+                    <li>Key services and technologies support to: Windows and MAC hardware and software support, Classroom technology troubleshooting, Crestron technologies.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Section -->
+    <section class="education" id="education">
+        <div class="container">
+            <h2>Education</h2>
+            <div class="education-item">
+                <h3>Boston University, Boston, MA</h3>
+                <h4>B.S. in Mechanical and Electrical Engineering</h4>
+                <p class="duration"> Anticipated May 2028</p>
+                <p>Developing a strong foundation in engineering, programming, and algorithms. Concentration in Aerospace Engineering, Kilachand Honors College.</p>
+            </div>
+            <div class="education-item">
+                <h3>Shelton High School, Shelton, CT</h3>
+                <h4>Diploma with Distinction</h4>
+                <p class="duration"> Sept. 2020 - Jun. 2028</p>
+                <p>Activities and societies: Gaelhawks Robotics, SHS FBLA (Vice-President), SHS Racquet Club (Founder/President), Varsity Track & Field (SCC All-Academic), National Honor Society</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section class="projects" id="projects">
+        <div class="container">
+            <h2>Projects & Activities</h2>
+            <div class="project-item" data-project="1">
+                <img src="images/quartor.png" alt="Project 1">
+                <div class="project-info">
+                    <h3>QUARTOR: Life-Saving Technology</h3>
+                    <p>An advanced quadcopter for disaster response, utilizing YOLOv5x object detection and thermal imaging.</p>
+                </div>
+            </div>
+
+            <div class="project-item" data-project="2">
+                <img src="images/temp.png" alt="Project 2">
+                <div class="project-info">
+                    <h3>ENG EK 131 - Room Temperature Monitor</h3>
+                    <p>An advanced room temperature monitoring system for efficient environmental control.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Modal (Hidden by default) -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <span id="closeModal" class="close">&times;</span>
+            <div id="modalImageContainer">
+                <img id="modalImage" src="" alt="Project Image">
+            </div>
+            <h2 id="modalTitle"></h2>
+            <p id="modalDescription"></p>
+            <div class="modal-links">
+                <a id="modalGithubLink" href="#" target="_blank">View on GitHub</a>
+                <a id="modalPdfLink" href="#" target="_blank">Download PDF</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2>Contact Me</h2>
+            <p>If you'd like to collaborate or simply say hi, feel free to reach out!</p>
+            <div class="contact-icons">
+                <a href="mailto:paulnguy@bu.edu" target="_blank" class="icon"><i class="fas fa-envelope"></i></a>
+                <a href="https://www.linkedin.com/in/pmngvyen" target="_blank" class="icon"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/pmngvyen" target="_blank" class="icon"><i class="fab fa-github"></i></a>
+                <a href="https://www.instagram.com/pmngvyen" target="_blank" class="icon"><i class="fab fa-instagram"></i></a>
+                <a href="https://www.facebook.com/pmngvyen" target="_blank" class="icon"><i class="fab fa-facebook"></i></a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Paul Nguyen. All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Include this script at the end of the body, just before the closing </body> tag -->
+    <script>
+        // Data for the projects' detailed descriptions, images, and links
+        const projectDetails = {
+            1: {
+                title: "QUARTOR: Disaster Response Drone",
+                description: "QUARTOR aims to design and develop a quadcopter that can in natural disaster situations, fly over affected areas, locate survivors, and determine their status. Implementing object recognition and thermal imaging tasks through the use of YOLOv5x object detection models through a Google CoLab pipeline. Using a combination of computer vision and infrared sensors to identify objects and their thermal signatures to determine the status and location of survivors. Drone flight programmed in C++, working within the ArduinoIDE.",
+                image: "images/quartor.png",  // Image source for project 1
+                githubLink: "https://github.com/pmngvyen/teensyflight1",  // GitHub link
+                pdfLink: "files/quartor.pdf"  // PDF link
+            },
+            2: {
+                title: "ENG EK 131 - Room Temperature Monitor",
+                description: "This project focuses on the design and development of a room temperature monitor using an Arduino Uno. The monitor is equipped with an LCD display to show the current temperature, an alarm system (comprising a red LED and a piezo buzzer) to alert the user when the temperature exceeds a predefined threshold, and a user-friendly interface with a power switch for easy operation. The goal is to create an easy-to-use temperature monitoring system that provides both visual and audible alerts for temperature deviations, allowing users to take corrective actions as needed.",
+                image: "images/temp.png",  // Image source for project 2
+                githubLink: "https://github.com/pmngvyen/roomtempmon",  // GitHub link
+                pdfLink: "files/temp.pdf"  // PDF link
+            }
+        };
+    
+        // Modal and project-item click logic
+        const modal = document.getElementById("projectModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalDescription = document.getElementById("modalDescription");
+        const modalImage = document.getElementById("modalImage");
+        const modalGithubLink = document.getElementById("modalGithubLink");
+        const modalPdfLink = document.getElementById("modalPdfLink");
+        const closeModal = document.getElementById("closeModal");
+    
+        // Event listener for project items
+        document.querySelectorAll('.project-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const projectId = this.getAttribute('data-project');
+                const project = projectDetails[projectId];
+    
+                if (project) {
+                    // Set modal content
+                    modalTitle.textContent = project.title;
+                    modalDescription.textContent = project.description;
+                    modalImage.src = project.image;  // Set the image in the modal
+                    modalGithubLink.href = project.githubLink;  // Set GitHub link in the modal
+                    modalPdfLink.href = project.pdfLink;  // Set PDF link in the modal
+    
+                    modal.style.display = "block"; // Open modal
+                }
+            });
+        });
+    
+        // Close the modal when the user clicks on the "×"
+        closeModal.addEventListener('click', function() {
+            modal.style.display = "none"; // Close modal
+        });
+    
+        // Close the modal if the user clicks anywhere outside of the modal content
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none"; // Close modal if clicked outside
+            }
+        });
+    </script>
+    
+    
+
+</body>
+</html>
