@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About · Paul Nguyen</title>
+<meta name="description" content="Paul Nguyen: education, capability and interests. Mechanical and electrical engineering at Boston University.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400..800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="assets/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+</head>
+<body data-page="about">
+
+<div class="frame" id="frame" aria-hidden="true"></div>
+
+<div class="stage" id="stage" aria-hidden="true">
+  <svg id="arm" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#10151A" stroke-width=".8"/>
+      </pattern>
+    </defs>
+    <g id="gEnv"></g>
+    <g id="gBase"></g>
+    <g id="gChain"></g>
+    <g id="gStrut"></g>
+  </svg>
+</div>
+
+<div class="note">
+  <b id="nMode">idle</b>
+  <dl>
+    <dt>J1</dt><dd id="nJ1">0.0</dd>
+    <dt>J2</dt><dd id="nJ2">0.0</dd>
+    <dt>J3</dt><dd id="nJ3">0.0</dd>
+    <dt>ITEM</dt><dd id="nI">--</dd>
+    <dt>GRIP</dt><dd id="nP">OPEN</dd>
+    <dt>EXT</dt><dd id="nR" class="m">0%</dd>
+  </dl>
+</div>
+
+<header class="bar">
+  <a class="brand" href="index.html">Paul Nguyen <s>ME/EE</s></a>
+  <nav class="tabs" id="tabs" aria-label="Sections"></nav>
+</header>
+
+<main class="shell" id="shell">
+
+  <section class="view on" data-view="about">
+    <div class="band"><h2>About</h2><span class="tag">Profile</span></div>
+    <div class="brief">
+      <p class="lede">I am a student at Boston University, in my third year studying mechanical and electrical engineering with a concentration in robotics. Outside of coursework I am on structures and avionics for BU's rocket propulsion group, I run monthly hackathons for the UAV team, I am an IT support specialist for the university, and I make tools for whenever something annoys me enough.</p>
+      <div class="figs" id="aboutFigs"></div>
+    </div>
+
+    <div class="sub">Education</div>
+    <div class="rows">
+      <div data-target>
+        <div class="k">Degree</div>
+        <div class="v"><p class="set">B.S. Mechanical Engineering and Electrical Engineering</p></div>
+      </div>
+      <div data-target>
+        <div class="k">School</div>
+        <div class="v"><p class="set">Boston University, College of Engineering and Kilachand Honors College</p></div>
+      </div>
+      <div data-target>
+        <div class="k">Graduating</div>
+        <div class="v"><p class="set">May 2028</p></div>
+      </div>
+      <div data-target>
+        <div class="k">Coursework</div>
+        <div class="v"><p class="set">Computational Linear Algebra, CAD, Logic Design, Circuits, Materials Science, Static Mechanics, Signals and Systems, Software Engineering, Thermodynamics, Fluid Mechanics, Manufacturing, Electromagnetics, Control Systems, Electronics, Instrumentation</p></div>
+      </div>
+    </div>
+
+    <div class="sub">Capability</div>
+    <div class="skills" id="capability"></div>
+
+    <div class="sub">Interests</div>
+    <div class="tiles" id="interests"></div>
+  </section>
+
+</main>
+
+<div class="titleblock">
+  <div>
+    <span><em>Drawn</em>P. Nguyen</span>
+    <span><em>Sheet</em><i id="tbSheet" style="font-style:normal">01</i></span>
+    <span><em>Scale</em>1:1</span>
+    <span><em>Rev</em><i id="tbYear" style="font-style:normal"></i></span>
+  </div>
+</div>
+
+<script src="assets/content.js"></script>
+<script src="assets/site.js"></script>
+<script src="assets/arm.js"></script>
+</body>
+</html>
