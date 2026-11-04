@@ -19,18 +19,22 @@
 
 <dialog class="sheet" id="projDlg" aria-labelledby="dlgTitle">
   <div class="sheet-head">
-    <span class="sheet-no" id="dlgNo"></span>
+    <span class="sheet-no" id="dlgNo" aria-live="polite"></span>
     <button class="sheet-x" id="dlgX" type="button" aria-label="Close">&#215;</button>
   </div>
-  <div class="sheet-grid">
-    <div class="sheet-fig" id="dlgFig"></div>
-    <div class="sheet-tx">
-      <h3 id="dlgTitle"></h3>
-      <div class="who" id="dlgWho"></div>
-      <div class="when" id="dlgWhen"></div>
-      <p id="dlgBody"></p>
-      <div class="spec" id="dlgSpec"></div>
-      <div class="out" id="dlgOut"></div>
+  <button class="sheet-b prev" id="dlgPrev" type="button" aria-label="Previous project">&#8249;</button>
+  <button class="sheet-b next" id="dlgNext" type="button" aria-label="Next project">&#8250;</button>
+  <div class="sheet-body">
+    <div class="sheet-grid">
+      <div class="sheet-fig" id="dlgFig"></div>
+      <div class="sheet-tx">
+        <h3 id="dlgTitle"></h3>
+        <div class="who" id="dlgWho"></div>
+        <div class="when" id="dlgWhen"></div>
+        <p id="dlgBody"></p>
+        <div class="spec" id="dlgSpec"></div>
+        <div class="out" id="dlgOut"></div>
+      </div>
     </div>
   </div>
 </dialog>
