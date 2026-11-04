@@ -16,7 +16,7 @@
   --rule-2: #B4BABA;
 
   --mark:   #1B32C8;
-  --hover:  rgba(255,255,255,.58);
+  --hover:  #FFFFFF;
 
   --mono: 'DM Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   --sans: 'Archivo', system-ui, -apple-system, 'Segoe UI', Helvetica, sans-serif;
@@ -223,7 +223,12 @@ h3{ font-weight: 700; letter-spacing: -.018em; }
 /* ===========================================================
    HOME
    =========================================================== */
-.hero{ min-height: max(430px, calc(100vh - 380px)); display: flex; flex-direction: column; justify-content: center; }
+.hero{
+  min-height: max(430px, calc(100vh - 380px));
+  display: flex; flex-direction: column; justify-content: center;
+  /* named once so the plate beside the name can be cut from the same figure */
+  --title: clamp(2.5rem, 8.6vw, 7.4rem);
+}
 .hero .hcol{ min-width: 0; }
 .hero .me{ margin: 30px 0 0; width: 100%; max-width: 380px; }
 .hero .me .plate{ aspect-ratio: 3 / 2; }
@@ -238,18 +243,43 @@ h3{ font-weight: 700; letter-spacing: -.018em; }
      sizes to its own content rather than stretching across the sheet. */
   .hero .htop{ align-self: start; width: max-content; max-width: 100%; }
 
+  /* Two columns, two rows. The strapline keeps the first row to itself and the
+     name and the plate share the second, so the plate can be sized against the
+     name alone rather than against the name plus the line above it, which is
+     what used to leave it standing proud of the title. The column that holds
+     the text is dissolved into the row rather than nested inside it, so both
+     of its children become cells of this grid. */
   .hero .hrow{
     display: grid;
     grid-template-columns: minmax(0, max-content) clamp(250px, 26vw, 382px);
+    grid-template-rows: auto auto;
     justify-content: start;
     align-items: end;
     column-gap: clamp(22px, 2.6vw, 40px);
   }
-  .hero .me{ margin: 0; max-width: none; position: relative; }
+  .hero .hcol{ display: contents; }
+  .hero .over{ grid-column: 1; grid-row: 1; min-width: 0; }
+  .hero h1{ grid-column: 1; grid-row: 2; min-width: 0; }
+
+  /* Stretched to the name's height with its ratio released, so the picture and
+     the title begin and end on the same two lines. */
+  /* The plate runs the full height of the text beside it, from the cap line of
+     the strapline down to the name's baseline, so both columns of the block
+     start and stop together. A line of type is taller than the letters in it,
+     so each end is inset by the air the line box carries: a flat 3px under the
+     strapline's box, and about .108em of the title above its own baseline. */
+  .hero .me{
+    grid-column: 2; grid-row: 1 / -1;
+    max-width: none; position: relative;
+    align-self: stretch;
+    margin: 3px 0 calc(var(--title) * .108);
+  }
+  /* The picture is lifted out of the flow and pinned to the cell, so its own
+     proportions cannot push the row taller than the name that sets it. */
+  .hero .me .plate{ position: absolute; inset: 0; aspect-ratio: auto; }
 
   /* Captioned like every other plate, but lifted out of the flow here so the
      rule beneath still ends at the plate's edge rather than the caption's. */
-  .hero .me{ display: block; }
   .hero .me .cap{
     position: absolute; left: 100%; top: 0; bottom: 0;
     margin-left: 11px;
@@ -279,7 +309,7 @@ h3{ font-weight: 700; letter-spacing: -.018em; }
   text-transform: uppercase; color: var(--ink-3);
   margin-bottom: clamp(18px, 3vw, 30px);
 }
-.hero h1{ font-size: clamp(2.5rem, 8.6vw, 7.4rem); }
+.hero h1{ font-size: var(--title); }
 .hero h1 span{ display: block; }
 .hero h1 i{ font-style: normal; display: inline-block; }
 body.editing .hero h1 i{ cursor: grab; }
@@ -331,7 +361,8 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
 .job p{ color: var(--ink-2); font-size: 1rem; line-height: 1.7; margin-top: 15px; }
 .job .fig{ margin-bottom: 18px; }
 
-.feat h3{ font-size: clamp(1.45rem, 2.7vw, 2.15rem); }
+.feat{ --jt: clamp(1.45rem, 2.7vw, 2.15rem); }
+.feat h3{ font-size: var(--jt); }
 .half h3{ font-size: clamp(1.1rem, 1.6vw, 1.34rem); }
 .feat .plate{ aspect-ratio: 3 / 2; }
 .half .plate{ aspect-ratio: 3 / 2; }
@@ -346,7 +377,9 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
     display: grid;
     grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     column-gap: clamp(26px, 3.4vw, 58px);
-    align-items: center;
+    /* the picture and the writing start together rather than the picture
+       floating at the middle of a column it is not the same height as */
+    align-items: start;
   }
   .feat .jn{
     grid-column: 1 / -1;
@@ -354,7 +387,10 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
     color: var(--rule-2);
     margin-bottom: 14px;
   }
-  .feat .fig{ grid-column: 1; grid-row: 2; margin-bottom: 0; }
+  .feat .fig{
+    grid-column: 1; grid-row: 2; margin-bottom: 0;
+    margin-top: calc(var(--jt) * .13);   /* down to the title's cap line */
+  }
   .feat .jtx{ grid-column: 2; grid-row: 2; }
   .feat.flip{ grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
   .feat.flip .fig{ grid-column: 2; }
@@ -473,24 +509,55 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
 .rows .v p + p{ margin-top: 11px; }
 .rows .v .set{ color: var(--ink-2); }
 
-/* Every hover wash used to stop dead at the text, which read as a block cut
-   off at the margin rather than a row lighting up. They all bleed a little
-   past the column now. It is a layer behind the row rather than padding, so
-   the rules, the text and the layout all stay exactly where they were. */
-.rows > div, .item, .file, .reach a, .plain a, .job{ position: relative; }
+/* Hovering a block lifts it to white and drops a mark in the margin beside
+   it, the way a revision bar flags a changed row on a drawing. The wash on
+   its own was an eight point lift on paper, which is near enough invisible;
+   the bar is what actually tells you where you are. Both live on a layer
+   behind the block rather than in its padding, so the rules, the text and
+   the layout all stay exactly where they were. */
+.rows > div, .item, .file, .reach a, .plain a, .job,
+.skill, .tile{ position: relative; }
 .rows > div::after, .item::after, .file::after,
-.reach a::after, .plain a::after, .job::after{
+.reach a::after, .plain a::after, .job::after,
+.skill::after, .tile::after{
   content: "";
   position: absolute;
   inset: 0 -14px;
   z-index: -1;
   pointer-events: none;
-  transition: background .15s;
+  background: var(--hover);
+  opacity: 0;
+  transition: opacity .15s;
 }
 .rows > div:hover::after, .item:hover::after, .file:hover::after,
-.reach a:hover::after, .plain a:hover::after, .job:hover::after{
+.reach a:hover::after, .plain a:hover::after, .job:hover::after,
+.skill:hover::after, .tile:hover::after{ opacity: 1; }
+/* the legend columns and the picture tiles sit in tight grids, so their wash
+   bleeds less than a full width row's would and never reaches its neighbour */
+.skill::after, .tile::after{ inset: -9px -10px; }
+
+/* A section label belongs to what it labels. It takes the wash on its own
+   hover and again whenever something inside the block beneath it is hovered,
+   so a highlight in a section no longer stops short of the title above it and
+   read as the wash being cut off rather than the section being picked out.
+   These labels are already only as wide as their words, so the wash sits on
+   them as a tab rather than running the width of the sheet. */
+.sub, .gname{ position: relative; }
+.sub::after, .gname::after{
+  content: "";
+  position: absolute;
+  inset: -7px -12px;
+  z-index: -1;
+  pointer-events: none;
   background: var(--hover);
+  opacity: 0;
+  transition: opacity .15s;
 }
+.sub:hover::after, .gname:hover::after{ opacity: 1; }
+/* kept as a rule of its own: a browser that does not know :has() drops the
+   whole rule it appears in, and the plain hover above should survive that */
+.sub:has(+ * > :hover)::after,
+.gname:has(+ * > :hover)::after{ opacity: 1; }
 
 /* text the arm is passing behind gets a translucent card, so it stays readable
    without hiding the drawing underneath it */
@@ -528,20 +595,28 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
 .job{ cursor: pointer; }
 .job:focus-visible{ outline: 2px solid var(--mark); outline-offset: 3px; }
 
+/* The sheet itself holds still and its body does the scrolling, so the head
+   stays put and the two steps can stand against the sheet's own edges rather
+   than drifting with the text. */
 .sheet{
   width: min(920px, calc(100vw - 40px));
   max-height: min(860px, calc(100vh - 56px));
   margin: auto;
-  overflow: auto;
+  overflow: visible;
   border: 1px solid var(--ink);
   background: var(--sheet);
   color: var(--ink);
   padding: 0;
 }
+/* the column is hung on [open] rather than on .sheet itself: a bare display
+   here would beat the browser's own display:none for a shut dialog and leave
+   the sheet laid out on the page behind everything */
+.sheet[open]{ display: flex; flex-direction: column; }
+.sheet-body{ flex: 1 1 auto; min-height: 0; overflow: auto; }
 .sheet::backdrop{ background: rgba(241, 243, 242, .86); }
 
 .sheet-head{
-  position: sticky; top: 0; z-index: 2;
+  flex: none;
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px;
   padding: 13px clamp(18px, 3vw, 30px);
@@ -560,11 +635,94 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
 }
 .sheet-x:hover{ border-color: var(--ink); background: var(--paper); }
 
+/* A hand either side of the sheet, level with its middle, for stepping from
+   one project to the next without leaving it. Drawn as the bare mark rather
+   than a button: nothing to it but the stroke, which darkens under the
+   pointer. The sheet gives up a little width from 640 up so they have paper
+   of their own to stand on, clear of it; narrower than that there is none to
+   spare and they tuck into the gutter inside the edge. */
+.sheet-b{
+  position: absolute;
+  top: 50%; margin-top: -28px;
+  z-index: 3;
+  appearance: none; cursor: pointer; line-height: 1;
+  font-family: var(--mono); font-size: 1.5rem;
+  width: 30px; height: 56px;
+  padding: 0; border: 0; background: none;
+  color: var(--ink-3);
+  transition: color .15s;
+}
+.sheet-b:hover{ color: var(--ink); }
+.sheet-b.prev{ left: 0; }
+.sheet-b.next{ right: 0; }
+@media (min-width: 640px){
+  .sheet{ width: min(920px, calc(100vw - 104px)); }
+  .sheet-b.prev{ left: -36px; }
+  .sheet-b.next{ right: -36px; }
+}
+.sheet-b:hover{ border-color: var(--ink); background: var(--paper); }
+.sheet-b:focus-visible, .sheet-x:focus-visible{
+  outline: 2px solid var(--mark); outline-offset: 2px;
+}
+
 .sheet-grid{ display: grid; gap: clamp(20px, 3vw, 34px); padding: clamp(20px, 3vw, 34px); }
 @media (min-width: 760px){
   .sheet-grid{ grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: start; }
 }
+/* Where the steps tuck inside the sheet they are given a gutter of their own,
+   so they stand beside the drawing and the text rather than over them. */
+@media (max-width: 639px){
+  .sheet-grid{ padding-left: 34px; padding-right: 34px; }
+}
 .sheet-fig .fig{ margin: 0; }
+
+/* A project's photographs run as a strip pushed sideways, one view at a time,
+   so a project can show more than the one picture its tile has room for. Each
+   view takes the column whole, caption and all, rather than letting the next
+   one show at the edge where it would crowd the caption: the count and the
+   marks underneath are what say there is more, and they drive the strip. */
+.shots{
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.shots::-webkit-scrollbar{ display: none; }
+.shots:focus-visible{ outline: 2px solid var(--mark); outline-offset: 4px; }
+.shots > .fig{
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  margin: 0;
+}
+.shots .plate{ aspect-ratio: 3 / 2; }
+
+.shots-nav{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; margin-top: 13px;
+}
+.shots-no{
+  font-family: var(--mono); font-size: .6rem;
+  letter-spacing: .05em; color: var(--ink-3);
+}
+.shots-no i{ font-style: normal; color: var(--ink); }
+
+/* short rules rather than dots, in keeping with the rest of the sheet */
+.shots-dots{ display: flex; gap: 8px; }
+.shots-dots button{
+  appearance: none; cursor: pointer; padding: 0; position: relative;
+  width: 24px; height: 14px;
+  border: 0; background: none;
+}
+.shots-dots button::after{
+  content: "";
+  position: absolute; left: 0; right: 0; top: 50%;
+  border-top: 1px solid var(--rule-2);
+}
+.shots-dots button:hover::after{ border-top-color: var(--ink); }
+.shots-dots button[aria-current="true"]::after{ border-top: 2px solid var(--mark); }
+.shots-dots button:focus-visible{ outline: 2px solid var(--mark); outline-offset: 2px; }
 .sheet-tx h3{ font-size: clamp(1.25rem, 2.4vw, 1.75rem); margin-bottom: 9px; }
 .sheet-tx .who{ font-family: var(--mono); font-size: .66rem; color: var(--mark); }
 .sheet-tx .when{ font-family: var(--mono); font-size: .66rem; color: var(--ink-3); margin-top: 3px; }
@@ -638,7 +796,9 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
   }
   .brief{ margin-bottom: 10px; }
   .brief .lede{ max-width: none; margin-bottom: 0; }
-  .brief .figs{ margin-bottom: 0; }
+  /* 7px is the air the blurb's first line carries above its capitals, so the
+     plate starts on the same line the reading does */
+  .brief .figs{ margin-bottom: 0; margin-top: 7px; }
 }
 
 /* Every plate on the site is captioned the same way: the note stands on its
@@ -653,7 +813,9 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
 }
 .plate{
   position: relative;
-  border: 1px solid var(--rule-2);
+  /* a drawn outline rather than a faint one: every picture on the sheet reads
+     as a framed detail view, the same weight wherever it appears */
+  border: 1px solid var(--ink-3);
   background-color: var(--white);
   aspect-ratio: 4 / 3;
   overflow: hidden;
@@ -661,7 +823,10 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
     linear-gradient(to bottom right, transparent calc(50% - .5px), var(--rule) calc(50% - .5px), var(--rule) calc(50% + .5px), transparent calc(50% + .5px)),
     linear-gradient(to bottom left,  transparent calc(50% - .5px), var(--rule) calc(50% - .5px), var(--rule) calc(50% + .5px), transparent calc(50% + .5px));
 }
-.plate img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.plate img, .plate video{
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  background: var(--white);
+}
 .plate .fn{
   position: absolute; left: 0; bottom: 0;
   font-family: var(--mono); font-size: .56rem; color: var(--ink-3);

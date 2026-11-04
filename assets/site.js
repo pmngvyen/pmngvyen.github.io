@@ -16,14 +16,134 @@ tbSheet.textContent = pad2(TABS.findIndex(t => t.id === page) + 1);
 tabs.innerHTML = TABS.map(t => `<a class="tab" href="${t.file}"${
   t.id === page ? ' aria-current="page"' : ''}>${t.label}</a>`).join('');
 
+const esc = t => String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                          .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/* A plate holds a still or a clip, and works out which from the filename. An
+   animated GIF is a still as far as the browser is concerned and needs nothing
+   special. A video file becomes a <video> that runs silently, loops, carries
+   no controls and plays only while it is actually on screen, so nothing runs
+   behind a closed detail sheet or on a view you have scrolled past. Someone
+   who has asked their system for less motion gets controls and no autoplay. */
+const CLIP = /\.(mp4|webm|m4v|ogv)(\?.*)?$/i;
+
+const clips = ('IntersectionObserver' in window)
+  ? new IntersectionObserver(es => es.forEach(e => {
+      const v = e.target;
+      if(e.isIntersecting && !reduced) v.play().catch(() => {});
+      else if(!v.paused) v.pause();
+    }), { threshold: .4 })
+  : { observe(){}, unobserve(){} };
+
+const media = (src, alt, poster) => CLIP.test(src)
+  ? `<video src="${src}" aria-label="${esc(alt)}"${poster ? ` poster="${poster}"` : ''
+      } muted loop playsinline preload="metadata"${reduced ? ' controls' : ''}></video>`
+  : `<img src="${src}" alt="${esc(alt)}" loading="lazy">`;
+
 const plate = (src, cap, fig) => `
   <figure class="fig">
     <div class="plate">
-      <img src="${src}" alt="${cap}" loading="lazy">
+      ${media(src, cap)}
       <span class="fn">${src}</span>
     </div>
-    <figcaption class="cap"><b>Fig ${fig}</b>${cap}</figcaption>
+    <figcaption class="cap"><b>Fig ${fig}</b>${esc(cap)}</figcaption>
   </figure>`;
+
+/* The photographs of one project: the thumbnail off the tile first, then
+   whatever else that entry lists. They run as a strip the reader pushes
+   sideways, one view at a time, so a project can show more than the single
+   picture a tile has room for. A list of one is simply that picture. */
+const views = p => [p.img, ...(p.more || [])]
+  .filter(Boolean)
+  .map(v => typeof v === 'string' ? { src: v } : v);
+
+function gallery(p, no){
+  const v = views(p);
+  if(!v.length) return '';
+  const strip = v.map((s, k) => `
+      <figure class="fig">
+        <div class="plate">
+          ${media(s.src, s.cap || p.title, s.poster)}
+          <span class="fn">${s.src}</span>
+        </div>
+        <figcaption class="cap"><b>Fig ${no}.${k + 1}</b>${
+          esc(s.cap || p.title)}</figcaption>
+      </figure>`).join('');
+  if(v.length < 2) return `<div class="shots lone">${strip}</div>`;
+  return `
+    <div class="shots" id="dlgShots" tabindex="0" role="group"
+         aria-label="Photographs of ${esc(p.title)}">${strip}</div>
+    <div class="shots-nav">
+      <span class="shots-no"><i id="dlgShotN">01</i> / ${pad2(v.length)}</span>
+      <div class="shots-dots">${v.map((_, k) =>
+        `<button type="button" aria-label="View ${k + 1} of ${v.length}"></button>`
+      ).join('')}</div>
+    </div>`;
+}
+
+/* The count and the marks under the strip follow it, and the marks drive it.
+   Left alone, the strip also walks itself forward, so the rest of a project is
+   seen without being asked for and each view brings its own caption past with
+   it. It gives way the moment the reader takes hold: it waits while the
+   pointer is over it, and stops for good at the first wheel, touch, key or
+   mark, because a strip that keeps moving under someone who is driving it is
+   worse than one that never moved at all. A view holding a clip is held until
+   the clip has run once rather than cut off part way. */
+let shotTimer = null;
+
+function wireShots(){
+  clearTimeout(shotTimer);
+  const sc = $('#dlgShots');
+  if(!sc) return;
+  const slides = [...sc.children];
+  const dots = $$('.shots-dots button', dlgFig.parentNode);
+  const no = $('#dlgShotN');
+  let auto = !reduced, over = 0;
+
+  const nearest = () => {
+    let best = 0, gap = Infinity;
+    slides.forEach((c, i) => {
+      const d = Math.abs(c.offsetLeft - slides[0].offsetLeft - sc.scrollLeft);
+      if(d < gap){ gap = d; best = i; }
+    });
+    return best;
+  };
+  const mark = () => {
+    const k = nearest();
+    dots.forEach((d, i) => d.setAttribute('aria-current', i === k ? 'true' : 'false'));
+    if(no) no.textContent = pad2(k + 1);
+  };
+  const go = k => sc.scrollTo({ left: slides[k].offsetLeft - slides[0].offsetLeft,
+                                behavior: reduced ? 'auto' : 'smooth' });
+
+  function dwell(k){
+    const v = slides[k].querySelector('video');
+    return v && isFinite(v.duration)
+      ? Math.min(20000, Math.max(4600, v.duration * 1000 + 900))
+      : 4600;
+  }
+  function plan(k){
+    clearTimeout(shotTimer);
+    if(auto && !over) shotTimer = setTimeout(step, dwell(k));
+  }
+  function step(){
+    const k = (nearest() + 1) % slides.length;
+    go(k);
+    plan(k);
+  }
+  const stop = () => { auto = 0; clearTimeout(shotTimer); };
+
+  sc.addEventListener('scroll', mark, { passive: true });
+  ['wheel', 'touchstart', 'pointerdown', 'keydown', 'focusin'].forEach(t =>
+    sc.addEventListener(t, stop, { passive: true }));
+  sc.addEventListener('pointerenter', () => { over = 1; clearTimeout(shotTimer); });
+  sc.addEventListener('pointerleave', () => { over = 0; plan(nearest()); });
+  dots.forEach((d, i) => d.addEventListener('click', () => { stop(); go(i); }));
+
+  sc.scrollLeft = 0;
+  mark();
+  plan(0);
+}
 
 if(window.aboutFigs) aboutFigs.innerHTML = ABOUT_FIGS.map((f,i) => plate(f.src, f.cap, pad2(i+1))).join('');
 
@@ -37,7 +157,7 @@ if(window.interests) interests.innerHTML = INTERESTS.map((t,i) => `
   <figure class="tile ${t.shape || SHAPES[i % SHAPES.length]}" data-target>
     <div class="figwrap">
       <div class="plate">
-        <img src="${t.img}" alt="${t.k}" loading="lazy">
+        ${media(t.img, t.k)}
         <span class="fn">${t.img}</span>
       </div>
       <figcaption class="cap"><b>${pad2(i+1)}</b>${t.k}</figcaption>
@@ -70,24 +190,50 @@ if(window.plan) plan.innerHTML = PROJECTS.map((p,i) => {
 }).join('');
 if(window.pn) pn.textContent = PROJECTS.length + ' items';
 
-/* ---- the detail sheet. A tile carries a line; everything else is in here. ---- */
-let lastOpener = null;
-function openJob(i){
+const sheetTop = () => {
+  projDlg.scrollTop = 0;
+  const bd = $('.sheet-body');
+  if(bd) bd.scrollTop = 0;
+};
+
+/* ---- the detail sheet. A tile carries a line; everything else is in here.
+   Filling it is kept apart from opening it, so the step either side of the
+   item number can swap one project for the next without the sheet itself
+   going anywhere. It runs round the ends rather than stopping at them. ---- */
+let lastOpener = null, openAt = 0;
+
+function stepJob(d){
+  const n = PROJECTS.length;
+  fillJob((openAt + d + n) % n);
+}
+
+function fillJob(i){
   const p = PROJECTS[i];
   if(!p) return;
+  openAt = i;
+  // let go of the clips on the way out, so nothing plays on in the background
+  $$('video', dlgFig).forEach(v => { v.pause(); clips.unobserve(v); });
   dlgNo.textContent   = 'Item ' + pad2(i+1) + ' of ' + pad2(PROJECTS.length);
   dlgTitle.textContent = p.title;
   dlgWho.textContent  = p.who;
   dlgWhen.textContent = p.when;
   dlgBody.textContent = p.body;
-  dlgFig.innerHTML    = p.img ? plate(p.img, p.title, pad2(i+1)) : '';
+  dlgFig.innerHTML    = gallery(p, pad2(i+1));
+  wirePlates(dlgFig);
+  wireShots();
   dlgSpec.innerHTML   = p.spec.map(x => `<span>${x}</span>`).join('');
   dlgOut.innerHTML    = p.repo
     ? `<a href="https://github.com/pmngvyen/${p.repo}" target="_blank" rel="noopener">Source</a>`
     : '';
+  sheetTop();
+}
+
+function openJob(i){
+  if(!PROJECTS[i]) return;
   lastOpener = document.activeElement;
+  fillJob(i);
   projDlg.showModal();
-  projDlg.scrollTop = 0;
+  sheetTop();
 }
 
 if(window.plan) plan.addEventListener('click', e => {
@@ -101,10 +247,24 @@ if(window.plan) plan.addEventListener('keydown', e => {
   e.preventDefault();
   openJob(+a.dataset.job);
 });
+if(window.dlgPrev) dlgPrev.addEventListener('click', () => stepJob(-1));
+if(window.dlgNext) dlgNext.addEventListener('click', () => stepJob(1));
+
+// left and right walk the projects, except inside the strip, which takes its
+// own arrows to move between the views of the project already open
+if(window.projDlg) projDlg.addEventListener('keydown', e => {
+  if(e.target.closest && e.target.closest('#dlgShots')) return;
+  if(e.key === 'ArrowLeft'){ e.preventDefault(); stepJob(-1); }
+  if(e.key === 'ArrowRight'){ e.preventDefault(); stepJob(1); }
+});
+
 // clicking the paper around the sheet closes it, the same as Escape
 if(window.projDlg) projDlg.addEventListener('click', e => { if(e.target === projDlg) projDlg.close(); });
 if(window.dlgX) dlgX.addEventListener('click', () => projDlg.close());
-if(window.projDlg) projDlg.addEventListener('close', () => { if(lastOpener) lastOpener.focus(); });
+if(window.projDlg) projDlg.addEventListener('close', () => {
+  clearTimeout(shotTimer);
+  if(lastOpener) lastOpener.focus();
+});
 
 if(window.cat) cat.innerHTML = GROUPS.map(g => {
   const l = APPS.filter(a => a.kind === g);
@@ -128,15 +288,27 @@ if(window.cat) cat.innerHTML = GROUPS.map(g => {
 }).join('');
 if(window.an) an.textContent = APPS.length + ' live';
 
-// A plate keeps its placeholder until its image actually loads.
-(function(){
-  $$('.plate img').forEach(im => {
-    const box = im.closest('.plate');
-    if(im.complete && im.naturalWidth) { box.classList.add('has'); return; }
-    im.addEventListener('load',  () => box.classList.add('has'), { once:true });
-    im.addEventListener('error', () => im.remove(), { once:true });
+// A plate keeps its placeholder until its image actually loads. Called again
+// for the detail sheet, whose plates are built when it opens rather than here.
+function wirePlates(root){
+  $$('.plate img, .plate video', root || document).forEach(m => {
+    if(m.dataset.wired) return;
+    m.dataset.wired = '1';
+    const box = m.closest('.plate');
+    const show = () => box.classList.add('has');
+    const gone = () => m.remove();
+    if(m.tagName === 'VIDEO'){
+      if(m.readyState >= 1) show(); else m.addEventListener('loadedmetadata', show, { once:true });
+      m.addEventListener('error', gone, { once:true });
+      clips.observe(m);
+      return;
+    }
+    if(m.complete && m.naturalWidth) { show(); return; }
+    m.addEventListener('load',  show, { once:true });
+    m.addEventListener('error', gone, { once:true });
   });
-})();
+}
+wirePlates();
 
 if(window.plain) plain.innerHTML = REPOS.map(r => `
   <a href="https://github.com/pmngvyen/${r.name}" target="_blank" rel="noopener">
