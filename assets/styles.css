@@ -660,7 +660,6 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
   .sheet-b.prev{ left: -36px; }
   .sheet-b.next{ right: -36px; }
 }
-.sheet-b:hover{ border-color: var(--ink); background: var(--paper); }
 .sheet-b:focus-visible, .sheet-x:focus-visible{
   outline: 2px solid var(--mark); outline-offset: 2px;
 }
@@ -921,3 +920,206 @@ body.editing .hero h1 i.held{ color: var(--mark); cursor: grabbing; }
 @media (prefers-reduced-motion: reduce){
   *, *::before, *::after{ animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+
+
+/* ===========================================================
+   EXPERIENCE
+   A run of roles down one rule, each hanging off it on its own tick, with the
+   dates kept out in a column of their own so the titles line up and the eye
+   can go straight down them. Deliberately unlike the rows above it and the
+   legend below: the sheet should not read as the same block three times.
+   =========================================================== */
+.track{ border-left: 1px solid var(--ink); }
+.stint{
+  position: relative;
+  display: grid;
+  grid-template-columns: 10.5em minmax(0, 1fr);
+  gap: 0 clamp(18px, 2.4vw, 34px);
+  padding: 19px 0 21px 26px;
+  /* the tick that fixes each role to the rule, drawn into the background
+     rather than with ::before, which on a block the arm can pass behind
+     already belongs to the veil card */
+  background-image: linear-gradient(var(--ink), var(--ink));
+  background-repeat: no-repeat;
+  background-size: 15px 1px;
+  background-position: 0 27px;
+}
+.stint + .stint{ border-top: 1px solid var(--rule); }
+
+.st-when{
+  font-family: var(--mono); font-size: .66rem;
+  color: var(--ink-3);
+  padding-top: 3px;
+}
+.stint h4{ font-family: var(--sans); font-size: 1.05rem; font-weight: 600; line-height: 1.3; }
+.st-org{
+  font-family: var(--mono); font-size: .66rem;
+  color: var(--mark);
+  margin-top: 4px;
+}
+.stint p{
+  color: var(--ink-2); font-size: .94rem; line-height: 1.66;
+  margin-top: 11px; max-width: 62ch;
+}
+
+/* the same wash as every other block, but stopped at the rule instead of bled
+   past it, so hovering a role never paints over the spine it hangs from */
+.stint::after{
+  content: "";
+  position: absolute;
+  inset: 0 -14px 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background: var(--hover);
+  opacity: 0;
+  transition: opacity .15s;
+}
+.stint:hover::after{ opacity: 1; }
+
+/* narrow enough and the date gives up its column and sits above the role */
+@media (max-width: 760px){
+  .stint{
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 22px;
+    background-size: 12px 1px;
+    background-position: 0 25px;
+  }
+  .st-when{ padding-top: 0; margin-bottom: 7px; }
+}
+
+
+/* A project's documentation, hung under its gallery so it reads as belonging
+   to the drawing rather than to the writing beside it. Set as wide as the
+   plate, with the name at one end and the file's own type at the other, the
+   way a sheet references the document it was drawn from. */
+.docref{
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 11px 13px;
+  border: 1px solid var(--rule-2);
+  background: var(--white);
+  color: var(--ink);
+  font-family: var(--mono); font-size: .64rem;
+  text-transform: uppercase; letter-spacing: .04em;
+  text-decoration: none;
+  transition: border-color .15s, color .15s;
+}
+.docref i{ font-style: normal; color: var(--ink-3); transition: color .15s; }
+.docref:hover{ border-color: var(--ink); color: var(--mark); }
+.docref:hover i{ color: var(--mark); }
+
+
+/* Still being worked on. A stamp rather than a label: outlined, set small and
+   wide, in the one colour the sheet keeps for things that are live. */
+.wip{
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+  padding: 2px 7px 3px;
+  border: 1px solid var(--mark);
+  color: var(--mark);
+  font-family: var(--mono); font-size: .54rem; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .09em;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+
+/* ===========================================================
+   LENS
+   Any view in a sheet opens full size over it. The plate carries no badge
+   saying so: the pointer turns to a magnifier, which is the one convention
+   a picture has always had, and the picture itself is the button.
+   =========================================================== */
+.shots .plate.has{ cursor: zoom-in; }
+/* a clip that is there to be watched is not a plate to enlarge, and the
+   pointer says which it is: the video sits on top, so its own cursor wins */
+video[data-tap]{ cursor: pointer; }
+
+.lens{
+  width: max-content;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  margin: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  overflow: visible;
+}
+.lens[open]{ display: flex; flex-direction: column; }
+.lens::backdrop{ background: rgba(241, 243, 242, .93); }
+
+.lens-box{
+  display: flex;
+  min-height: 0;
+  border: 1px solid var(--ink);
+  background: var(--white);
+}
+.lens-box{ position: relative; }
+.lens-box img, .lens-box video{
+  display: block;
+  width: auto; height: auto;
+  max-width: calc(100vw - 50px);
+  max-height: calc(100vh - 92px);
+  object-fit: contain;
+}
+.lens-box img{ cursor: zoom-out; }
+
+/* the sheet's own pair sit behind the backdrop in roughly the same place and
+   read faintly through it, so they stand down while a picture is open */
+body.lensing .sheet > .sheet-b{ visibility: hidden; }
+
+.lens-foot{
+  display: flex; align-items: baseline;
+  gap: 18px;
+  margin-top: 9px;
+  font-family: var(--mono); font-size: .6rem;
+  color: var(--ink-3);
+}
+.lens-no{ margin-left: auto; letter-spacing: .05em; white-space: nowrap; }
+.lens-x{
+  appearance: none; cursor: pointer; line-height: 1;
+  font-family: var(--mono); font-size: .85rem;
+  padding: 0; border: 0; background: none; color: var(--ink-3);
+  transition: color .15s;
+}
+.lens-x:hover{ color: var(--ink); }
+
+/* The interests sheet is the project sheet with the writing taken out, so it
+   runs as one column: the name, then the pictures the width of the paper. */
+@media (min-width: 760px){
+  .sheet-grid.one{ grid-template-columns: minmax(0, 1fr); }
+}
+.sheet-grid.one{ gap: 18px; }
+.sheet-grid.one .sheet-tx h3{ margin-bottom: 0; }
+/* held to about the width the plate has in a project sheet, so an interest
+   reads as the same object and not as a billboard */
+.sheet-grid.one .sheet-fig{ max-width: 660px; }
+
+
+/* ===========================================================
+   GALLERY STEPS
+   On the picture rather than beside it, because inside a plate there is no
+   paper for a bare stroke to stand on. Drawn as a small white plate with a
+   hairline and an ink mark, the same cut as the sheet's close button, which
+   is the only way a control stays readable over a photograph that knows
+   nothing about it. The same pair serves the enlarged view.
+   =========================================================== */
+.shots-b{
+  position: absolute;
+  top: 50%; margin-top: -17px;
+  z-index: 2;
+  appearance: none; cursor: pointer; line-height: 1;
+  font-family: var(--mono); font-size: 1rem;
+  width: 26px; height: 34px;
+  padding: 0;
+  border: 1px solid var(--rule-2);
+  background: var(--white);
+  color: var(--ink-3);
+  transition: color .15s, border-color .15s;
+}
+.shots-b:hover{ color: var(--ink); border-color: var(--ink); }
+.shots-b:focus-visible{ outline: 2px solid var(--mark); outline-offset: 2px; }
+.shots-b.prev{ left: 8px; }
+.shots-b.next{ right: 8px; }

@@ -30,14 +30,25 @@ const CLIP = /\.(mp4|webm|m4v|ogv)(\?.*)?$/i;
 const clips = ('IntersectionObserver' in window)
   ? new IntersectionObserver(es => es.forEach(e => {
       const v = e.target;
-      if(e.isIntersecting && !reduced) v.play().catch(() => {});
-      else if(!v.paused) v.pause();
+      // leaving the screen always stops it, which is what takes the sound away
+      // when you scroll off a clip you started
+      if(!e.isIntersecting){ if(!v.paused) v.pause(); return; }
+      // and only the silent ones start themselves: one with sound has to be
+      // asked for, both because it should be and because no browser will
+      // autoplay audio that nobody clicked for
+      if(!reduced && !v.hasAttribute('data-tap')) v.play().catch(() => {});
     }), { threshold: .4 })
   : { observe(){}, unobserve(){} };
 
-const media = (src, alt, poster) => CLIP.test(src)
-  ? `<video src="${src}" aria-label="${esc(alt)}"${poster ? ` poster="${poster}"` : ''
-      } muted loop playsinline preload="metadata"${reduced ? ' controls' : ''}></video>`
+/* Two kinds of clip. The ordinary one is wallpaper: silent, looping, running
+   by itself while it is on screen. A tap clip is something to watch instead,
+   so it keeps its sound, starts only when it is clicked and stops on the next
+   click. Interests are tap clips; a project's are the silent sort. */
+const media = (src, alt, poster, tap) => CLIP.test(src)
+  ? `<video src="${src}" aria-label="${esc(alt)}"${poster ? ` poster="${poster}"` : ''}${
+      tap ? ' data-tap controls playsinline preload="metadata"'
+          : ` muted loop playsinline preload="metadata"${reduced ? ' controls' : ''}`
+    }></video>`
   : `<img src="${src}" alt="${esc(alt)}" loading="lazy">`;
 
 const plate = (src, cap, fig) => `
@@ -60,25 +71,57 @@ const views = p => [p.img, ...(p.more || [])]
 function gallery(p, no){
   const v = views(p);
   if(!v.length) return '';
+  /* The steps live inside each plate rather than once beside the strip. A
+     plate is the only box whose edges are the picture's edges, so putting
+     them there needs no measuring and lands them right however the sheet is
+     sized. They are kept out of the tab order: the marks underneath are the
+     real buttons, and the arrow keys do the same job. */
+  const step = v.length > 1 ? `
+          <button class="shots-b prev" type="button" tabindex="-1" aria-hidden="true">&#8249;</button>
+          <button class="shots-b next" type="button" tabindex="-1" aria-hidden="true">&#8250;</button>` : '';
   const strip = v.map((s, k) => `
       <figure class="fig">
         <div class="plate">
-          ${media(s.src, s.cap || p.title, s.poster)}
-          <span class="fn">${s.src}</span>
+          ${media(s.src, s.cap || p.title, s.poster, p.tap)}
+          <span class="fn">${s.src}</span>${step}
         </div>
         <figcaption class="cap"><b>Fig ${no}.${k + 1}</b>${
           esc(s.cap || p.title)}</figcaption>
       </figure>`).join('');
   if(v.length < 2) return `<div class="shots lone">${strip}</div>`;
   return `
-    <div class="shots" id="dlgShots" tabindex="0" role="group"
+    <div class="shots" tabindex="0" role="group"
          aria-label="Photographs of ${esc(p.title)}">${strip}</div>
     <div class="shots-nav">
-      <span class="shots-no"><i id="dlgShotN">01</i> / ${pad2(v.length)}</span>
+      <span class="shots-no"><i>01</i> / ${pad2(v.length)}</span>
       <div class="shots-dots">${v.map((_, k) =>
         `<button type="button" aria-label="View ${k + 1} of ${v.length}"></button>`
       ).join('')}</div>
     </div>`;
+}
+
+/* Projects still being worked on carry a stamp, on the tile beside the item
+   number and in the sheet beside the date. Set wip: true on the entry to
+   raise it, or wip: 'Some other words' to say something else. */
+const wip = p => p.wip
+  ? `<span class="wip">${esc(p.wip === true ? 'In progress' : p.wip)}</span>`
+  : '';   // no space before it: the gap is the stamp's own margin, so it does
+          // not grow with the big item number on a full width tile
+
+/* A project can carry a piece of documentation, which sits under its gallery.
+   doc is either a path or a URL, or { href, label } to say what it is called.
+   The tag on the right is the file's own type, or LINK when it points away. */
+const docKind = h => /^https?:/i.test(h)
+  ? 'Link'
+  : (h.split('.').pop() || 'file').toUpperCase();
+
+function docref(p){
+  if(!p.doc) return '';
+  const d = typeof p.doc === 'string' ? { href: p.doc } : p.doc;
+  if(!d.href) return '';
+  return `<a class="docref" href="${d.href}" target="_blank" rel="noopener">
+      <span>${esc(d.label || 'Documentation')}</span><i>${esc(docKind(d.href))}</i>
+    </a>`;
 }
 
 /* The count and the marks under the strip follow it, and the marks drive it.
@@ -91,13 +134,14 @@ function gallery(p, no){
    the clip has run once rather than cut off part way. */
 let shotTimer = null;
 
-function wireShots(){
+function wireShots(root){
   clearTimeout(shotTimer);
-  const sc = $('#dlgShots');
-  if(!sc) return;
+  const sc = $('.shots', root || document);
+  if(!sc || sc.classList.contains('lone')) return;
   const slides = [...sc.children];
-  const dots = $$('.shots-dots button', dlgFig.parentNode);
-  const no = $('#dlgShotN');
+  const nav = sc.nextElementSibling;
+  const dots = nav ? $$('button', nav) : [];
+  const no = nav ? $('.shots-no i', nav) : null;
   let auto = !reduced, over = 0;
 
   const nearest = () => {
@@ -140,9 +184,173 @@ function wireShots(){
   sc.addEventListener('pointerleave', () => { over = 0; plan(nearest()); });
   dots.forEach((d, i) => d.addEventListener('click', () => { stop(); go(i); }));
 
+  // the steps drawn on the plates are built with the markup, long before this
+  // runs, so the strip leaves them a handle rather than them reaching in
+  sc._step = d => { stop(); go((nearest() + d + slides.length) % slides.length); };
+
   sc.scrollLeft = 0;
   mark();
   plan(0);
+}
+
+/* Taken on the way down, like the clips, so a step is never also read as a
+   click on the picture it is drawn over. */
+document.addEventListener('click', e => {
+  const b = e.target.closest('.shots-b');
+  if(!b) return;
+  const sc = b.closest('.shots');
+  if(!sc || !sc._step) return;          // the lens pair have their own wiring
+  e.stopPropagation();
+  e.preventDefault();
+  sc._step(b.classList.contains('next') ? 1 : -1);
+}, true);
+
+/* Any view inside a sheet opens as large as the window will take it. Nothing
+   is drawn on the plate to say so: the pointer turns to a magnifier over it,
+   which is how a picture has said there is more of me for twenty years. A
+   plate still showing its placeholder has nothing to enlarge, so it is left
+   alone. */
+/* Caught on the way down rather than on the way up, so a clip that is there
+   to be watched is played by a click instead of being treated as a plate to
+   enlarge or a tile to open. */
+document.addEventListener('click', e => {
+  const v = e.target.closest('video[data-tap]');
+  if(!v) return;
+  e.stopPropagation();
+  e.preventDefault();
+  if(v.paused) v.play().catch(() => {}); else v.pause();
+}, true);
+
+let lensAt = 0, lensOf = [], lensStrip = null;
+
+// the caption's parts are laid out with a gap rather than separated by a
+// space, so they are read off one at a time and joined back up here
+const capText = fig => {
+  const c = fig && fig.querySelector('.cap');
+  return c ? [...c.childNodes].map(n => n.textContent.trim()).filter(Boolean).join('   ') : '';
+};
+
+function lensShow(k){
+  const v = lensOf[k];
+  if(!v) return;
+  lensAt = k;
+  lensBox.innerHTML = CLIP.test(v.src)
+    ? (v.tap
+        ? `<video src="${esc(v.src)}" data-tap controls playsinline></video>`
+        : `<video src="${esc(v.src)}" muted loop autoplay playsinline controls></video>`)
+    : `<img src="${esc(v.src)}" alt="${esc(v.cap)}">`;
+  lensCap.textContent = v.cap;
+  if(window.lensNo) lensNo.textContent = pad2(k + 1) + ' / ' + pad2(lensOf.length);
+  if(window.lensPrev) lensPrev.hidden = lensNext.hidden = lensOf.length < 2;
+  // the strip underneath follows along, so closing the picture leaves the
+  // sheet on the view you were actually looking at
+  if(lensStrip && lensStrip.children[0] && v.fig)
+    lensStrip.scrollTo({ left: v.fig.offsetLeft - lensStrip.children[0].offsetLeft,
+                         behavior: 'auto' });
+}
+
+function lensStep(d){
+  const n = lensOf.length;
+  if(n) lensShow((lensAt + d + n) % n);
+}
+
+document.addEventListener('click', e => {
+  const box = e.target.closest('.shots .plate.has');
+  if(!box || !window.lens) return;
+  // every view of this project that has something to show, so the enlargement
+  // can be walked without going back to the sheet
+  lensStrip = box.closest('.shots');
+  lensOf = [];
+  let start = 0;
+  $$('.fig', lensStrip).forEach(f => {
+    const pl = f.querySelector('.plate.has');
+    const m = pl && pl.querySelector('img, video');
+    if(!m) return;
+    if(pl === box) start = lensOf.length;
+    lensOf.push({ src: m.getAttribute('src'), cap: capText(f), fig: f,
+                  tap: m.hasAttribute('data-tap') });
+  });
+  if(!lensOf.length) return;
+  lensShow(start);
+  if(!lens.open) lens.showModal();
+  // the sheet's own steps sit behind the backdrop in roughly the same place as
+  // the lens's, and two sets of chevrons reading through each other is a mess
+  document.body.classList.add('lensing');
+});
+
+if(window.lens){
+  // the backdrop and the picture itself both close it; the video does not, or
+  // its own controls would be shutting the thing every time they were used
+  lens.addEventListener('click', e => {
+    if(e.target === lens || e.target.tagName === 'IMG') lens.close();
+  });
+  lens.addEventListener('keydown', e => {
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); lensStep(-1); }
+    if(e.key === 'ArrowRight'){ e.preventDefault(); lensStep(1); }
+  });
+  lens.addEventListener('close', () => {
+    lensBox.innerHTML = ''; lensOf = []; lensStrip = null;
+    document.body.classList.remove('lensing');
+  });
+  if(window.lensX) lensX.addEventListener('click', () => lens.close());
+  if(window.lensPrev) lensPrev.addEventListener('click', () => lensStep(-1));
+  if(window.lensNext) lensNext.addEventListener('click', () => lensStep(1));
+}
+
+/* An interest opens the same way a project does, minus the writing: the name
+   and the pictures, and nothing else in the sheet. */
+let intAt = 0, intOpener = null;
+
+function fillInt(i){
+  const t = INTERESTS[i];
+  if(!t) return;
+  intAt = i;
+  $$('video', intFig).forEach(v => { v.pause(); clips.unobserve(v); });
+  intNo.textContent    = 'Item ' + pad2(i+1) + ' of ' + pad2(INTERESTS.length);
+  intTitle.textContent = t.k;
+  intFig.innerHTML     = gallery({ title: t.k, img: t.img, more: t.more, tap: true },
+                                 pad2(i+1));
+  wirePlates(intFig);
+  wireShots(intFig);
+  sheetTop(intDlg);
+}
+function openInt(i){
+  if(!INTERESTS[i]) return;
+  intOpener = document.activeElement;
+  fillInt(i);
+  intDlg.showModal();
+  sheetTop(intDlg);
+}
+function stepInt(d){
+  const n = INTERESTS.length;
+  fillInt((intAt + d + n) % n);
+}
+
+if(window.interests) interests.addEventListener('click', e => {
+  const t = e.target.closest('[data-int]');
+  if(t) openInt(+t.dataset.int);
+});
+if(window.interests) interests.addEventListener('keydown', e => {
+  if(e.key !== 'Enter' && e.key !== ' ') return;
+  const t = e.target.closest('[data-int]');
+  if(!t) return;
+  e.preventDefault();
+  openInt(+t.dataset.int);
+});
+if(window.intPrev) intPrev.addEventListener('click', () => stepInt(-1));
+if(window.intNext) intNext.addEventListener('click', () => stepInt(1));
+if(window.intX) intX.addEventListener('click', () => intDlg.close());
+if(window.intDlg){
+  intDlg.addEventListener('click', e => { if(e.target === intDlg) intDlg.close(); });
+  intDlg.addEventListener('keydown', e => {
+    if(e.target.closest && e.target.closest('.shots')) return;
+    if(e.key === 'ArrowLeft'){ e.preventDefault(); stepInt(-1); }
+    if(e.key === 'ArrowRight'){ e.preventDefault(); stepInt(1); }
+  });
+  intDlg.addEventListener('close', () => {
+    clearTimeout(shotTimer);
+    if(intOpener) intOpener.focus();
+  });
 }
 
 if(window.aboutFigs) aboutFigs.innerHTML = ABOUT_FIGS.map((f,i) => plate(f.src, f.cap, pad2(i+1))).join('');
@@ -154,7 +362,9 @@ if(window.capability) capability.innerHTML = CAPABILITY.map((c,i) => `
   </div>`).join('');
 
 if(window.interests) interests.innerHTML = INTERESTS.map((t,i) => `
-  <figure class="tile ${t.shape || SHAPES[i % SHAPES.length]}" data-target>
+  <figure class="tile ${t.shape || SHAPES[i % SHAPES.length]}" data-target
+          data-int="${i}" role="button" tabindex="0"
+          aria-label="Open the pictures for ${esc(t.k)}">
     <div class="figwrap">
       <div class="plate">
         ${media(t.img, t.k)}
@@ -177,7 +387,7 @@ if(window.plan) plan.innerHTML = PROJECTS.map((p,i) => {
   return `
   <article class="${cls}" data-target data-job="${i}" role="button" tabindex="0"
            aria-label="Open the detail for ${p.title}">
-    <div class="jn">${pad2(i+1)}</div>
+    <div class="jn">${pad2(i+1)}${wip(p)}</div>
     ${p.img ? plate(p.img, p.title, pad2(i+1)) : ''}
     <div class="jtx">
       <h3>${p.title}</h3>
@@ -190,9 +400,10 @@ if(window.plan) plan.innerHTML = PROJECTS.map((p,i) => {
 }).join('');
 if(window.pn) pn.textContent = PROJECTS.length + ' items';
 
-const sheetTop = () => {
-  projDlg.scrollTop = 0;
-  const bd = $('.sheet-body');
+const sheetTop = d => {
+  if(!d) return;
+  d.scrollTop = 0;
+  const bd = $('.sheet-body', d);
   if(bd) bd.scrollTop = 0;
 };
 
@@ -215,17 +426,20 @@ function fillJob(i){
   $$('video', dlgFig).forEach(v => { v.pause(); clips.unobserve(v); });
   dlgNo.textContent   = 'Item ' + pad2(i+1) + ' of ' + pad2(PROJECTS.length);
   dlgTitle.textContent = p.title;
-  dlgWho.textContent  = p.who;
-  dlgWhen.textContent = p.when;
+  // who is optional: left out of an entry, the line goes rather than printing
+  // the word undefined where the organisation should be
+  dlgWho.textContent  = p.who || '';
+  dlgWho.hidden       = !p.who;
+  dlgWhen.innerHTML   = esc(p.when) + wip(p);
   dlgBody.textContent = p.body;
-  dlgFig.innerHTML    = gallery(p, pad2(i+1));
+  dlgFig.innerHTML    = gallery(p, pad2(i+1)) + docref(p);
   wirePlates(dlgFig);
-  wireShots();
+  wireShots(dlgFig);
   dlgSpec.innerHTML   = p.spec.map(x => `<span>${x}</span>`).join('');
   dlgOut.innerHTML    = p.repo
     ? `<a href="https://github.com/pmngvyen/${p.repo}" target="_blank" rel="noopener">Source</a>`
     : '';
-  sheetTop();
+  sheetTop(projDlg);
 }
 
 function openJob(i){
@@ -233,7 +447,7 @@ function openJob(i){
   lastOpener = document.activeElement;
   fillJob(i);
   projDlg.showModal();
-  sheetTop();
+  sheetTop(projDlg);
 }
 
 if(window.plan) plan.addEventListener('click', e => {
@@ -253,7 +467,7 @@ if(window.dlgNext) dlgNext.addEventListener('click', () => stepJob(1));
 // left and right walk the projects, except inside the strip, which takes its
 // own arrows to move between the views of the project already open
 if(window.projDlg) projDlg.addEventListener('keydown', e => {
-  if(e.target.closest && e.target.closest('#dlgShots')) return;
+  if(e.target.closest && e.target.closest('.shots')) return;
   if(e.key === 'ArrowLeft'){ e.preventDefault(); stepJob(-1); }
   if(e.key === 'ArrowRight'){ e.preventDefault(); stepJob(1); }
 });

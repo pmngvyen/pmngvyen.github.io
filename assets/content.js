@@ -19,19 +19,25 @@ const TABS = [
    line or so, it sits under the picture. shape is optional and sets how many
    cells the tile takes: 'big' is two by two, 'wide' and 'tall' are two by one
    each way, anything else is a single cell. Leave it out and the tiles take
-   a repeating pattern of shapes on their own. */
+   a repeating pattern of shapes on their own. Clicking a tile opens the same
+   gallery a project has, so more is the rest of the pictures for that
+   interest, exactly as it works below. Drop the line for a single picture. */
 const INTERESTS = [
   { k:'Music', shape:'big',
     img:'assets/interest-music.jpg',
+    more:['assets/interest-music-2.jpg', 'assets/interest-music-3.jpg'],
     v:'Guitar, bass, piano, drums, the works. Practicing to be better.' },
   { k:'Photography', shape:'tall',
     img:'assets/interest-photos.jpg',
+    more:['assets/interest-photos-2.jpg', 'assets/interest-photos-3.jpg'],
     v:'Me, my iPhone, and my dream Sony a7III.' },
   { k:'Board games', shape:'small',
     img:'assets/interest-games.jpg',
+    more:['assets/interest-games-2.jpg', 'assets/interest-games-3.jpg'],
     v:'Catan, Clue, Banagrams, etc.' },
   { k:'Art', shape:'small',
     img:'assets/interest-art.jpg',
+    more:['assets/interest-art-2.jpg', 'assets/interest-art-3.jpg'],
     v:'A little bit of sketching here and there.' }
 ];
 const SHAPES = ['big', 'tall', 'small', 'small', 'wide', 'tall'];
@@ -80,86 +86,103 @@ const ABOUT_FIGS = [
    The same is true of img above and of the Interests tiles. */
 const PROJECTS = [
   {
+    title: 'Nozzle test controller',
+    blurb: 'A test controller for a rocket nozzle sample, controlling igition and recording load data.',
+    wip: true,
+    img:   'assets/nozzle-controller.jpg',
+    more:  [//'assets/nozzle-controller-clip.mp4',
+            'assets/nozzle-controller-2.jpg', 'assets/nozzle-controller-3.jpg'],
+    when:  'Fall 2026 - Present',
+    body:  '',
+    spec:  ['Control systems', 'Schematic Design','Instrumentation']
+  },
+  {
     title: 'DUM-E robotic arm replica',
     blurb: 'A multi-axis replica of the shop arm from Iron Man, with a Python voice-control layer.',
+    wip: true,
     img:   'assets/dum-e-arm.jpg',
     more:  ['assets/dum-e-arm-clip.mp4',
             'assets/dum-e-arm-2.jpg', 'assets/dum-e-arm-3.jpg'],
-    who:   'Personal project',
-    when:  'May 2026 \u2192 present',
-    body:  'A multi-axis replica of DUM-E, the shop arm from the Iron Man films. More than 30 custom parts designed, printed and assembled across three design revisions and about 150 hours so far. The current work is a Python voice-control layer that maps spoken commands onto coordinated joint movement, now past a thousand lines and four hardware and software iterations. The arm drawn behind this page is the same linkage, solved live in the browser.',
+    when:  'Summer 2026 - Present',
+    body:  'A multi-axis replica of DUM-E, the shop arm from the Iron Man films. More than 30 custom parts designed, printed and assembled across three design revisions and about 150 hours so far. The current work is a Python voice-control layer that maps spoken commands onto coordinated joint movement, now past a thousand lines and four hardware and software iterations.',
     spec:  ['SolidWorks','3D printing','Python','Inverse kinematics','Servo control']
   },
   {
     title: 'Battery degradation in MBTA electric buses',
     blurb: 'How fast charging and cold weather cycling wear out the lithium-ion cells in the MBTA electric bus fleet.',
     img:   'assets/mbta-battery.jpg',
-    more:  ['assets/mbta-battery-2.jpg', 'assets/mbta-battery-3.jpg'],
-    who:   'Undergraduate research',
-    when:  'Jan 2026 \u2192 May 2026',
+    doc:   'assets/mbta-battery-doc.pdf',
+    more:  ['assets/mbta-battery-2.jpg', 'assets/mbta-battery-3.jpg', 'assets/mbta-battery-4.jpg'],
+    when:  'Spring 2026',
     body:  'Worked with four other mechanical engineering students on how fast charging and cold weather cycling wear out NMC 111 lithium-ion cells in the MBTA electric bus fleet, across more than 25 peer-reviewed studies. Traced three degradation mechanisms (lithium-ion diffusion, intergranular cracking and SEI layer growth) and proposed two materials fixes: single-crystal cathodes and dopant incorporation.',
     spec:  ['Materials science','Electrochemistry','Research']
   },
   {
     title: 'HTS junction box',
-    blurb: 'The electrical junction box for a liquid propulsion test stand, tying together more than 20 sensors and actuators.',
+    blurb: 'The electrical junction box for a liquid propulsion test stand, utilizing more than 20 sensors and actuators.',
     img:   'assets/hts-junction-box.jpg',
-    more:  ['assets/hts-junction-box-2.jpg', 'assets/hts-junction-box-3.jpg'],
-    who:   'BU Rocket Propulsion Group',
-    when:  'Nov 2025 \u2192 Mar 2026',
-    body:  'Designed and documented the electrical junction box for the liquid propulsion test stand with a six person team, tying together more than 20 sensors and actuators: pressure transducers, thermocouples and solenoid valves. Consolidating 14 connectors down to 6 and standardizing pin assignments across 40 or so channels cut assembly time by roughly a third and made integration errors far less likely. Wrote the full pinout and wiring documentation that went with it.',
+    more:  ['assets/hts-junction-box-2.jpg', 'assets/hts-junction-box-3.jpg','assets/hts-junction-box-4.jpg'],
+    when:  'Spring 2026',
+    body:  'Designed and documented the electrical junction box for the liquid propulsion test stand with BURPG, tying together more than 20 sensors and actuators: pressure transducers, thermocouples and solenoid valves. Consolidating 14 connectors down to 6 and standardizing pin assignments across 40 or so channels cut assembly time by roughly a third and made integration errors far less likely. Wrote the full pinout and wiring documentation that went with it.',
     spec:  ['Electrical integration','Harness design','Documentation']
   },
   {
     title: 'Chord detection',
-    blurb: 'A Python program that listens to audio and names the chord being played.',
-    img:   'assets/chord-detect.jpg',
-    more:  ['assets/chord-detect-clip.mp4',
+    blurb: 'A Python program takes in audio input to determine chords and notes being played.',
+    img:   'assets/chord-detect-clip.mp4',
+    doc:   'assets/chord-detect-doc.pdf',
+    more:  ['assets/chord-detect.jpg',
             'assets/chord-detect-2.jpg', 'assets/chord-detect-3.jpg'],
-    who:   'Personal project',
     repo:  'chorddetectr',
-    when:  '2025',
-    body:  'A Python program that listens to audio and names the chord being played, by taking the spectrum apart and folding it into a pitch class profile before matching against chord templates. Writeup still to come: how it handles inversions, and where it currently falls over on distorted guitar.',
+    when:  'Spring 2025',
+    body:  'A Python program that listens to takes in audio and determines the chord being played, by taking the spectrum apart and folding it into a pitch class profile before matching against chord templates. Writeup still to come: how it handles inversions, and where it currently falls over on distorted guitar.',
     spec:  ['Python','FFT','Signal processing','Audio']
   },
   {
     title: 'Truss structural analysis',
-    blurb: 'Working out the member forces in a truss and checking it against what it has to carry.',
+    blurb: 'Designing, creating a truss and analyzing the member forces in a truss determining buckling members and forces.',
     img:   'assets/truss-analysis.jpg',
+    doc:   'assets/truss-analysis-doc.pdf',
     more:  ['assets/truss-analysis-2.jpg', 'assets/truss-analysis-3.jpg'],
-    who:   'FILL IN: course, team or personal project',
-    when:  'FILL IN: when',
+    when:  'Spring 2026',
     body:  'FILL IN: the method, the loads applied, and what the analysis showed. Worth saying whether it was actually built and tested, and how the prediction compared with what it did.',
     spec:  ['Statics','Structural analysis']
   },
   {
-    title: 'Light based IR communication link',
+    title: 'FPGA Whack-A-Mole',
+    blurb: 'The arcade game in Verilog on a Nexys A7 board, drawn live to a VGA monitor.',
+    img:   'assets/whack-a-mole.jpg',
+    doc:   'assets/whack-a-mole-doc.pdf',
+    more:  ['assets/whack-a-mole-2.jpg', 'assets/whack-a-mole-3.jpg', 'assets/whack-a-mole-clip.mp4', 'assets/whack-a-mole-4.jpg'],
+    when:  'Fall 2025',
+    body:  'Whack-A-Mole implemented in Verilog on a Nexys A7 FPGA and drawn live to a 640 by 480 VGA monitor. Eleven modules in a three tier hierarchy under whack_game_top, with the gameplay held in a four state machine: level select, a five second countdown, thirty seconds of play, then game over and back to the menu. The three difficulties change how long a mole stays lit, from one second down to 0.4, by varying how many ticks of a 10 Hz clock pass before the next one appears. Two clock dividers cut the board\u2019s 100 MHz down to 1 Hz for the timers and 10 Hz for the moles, each of the five pushbuttons runs through its own debouncer, and the slow clocks are edge detected back into the 100 MHz domain so a tick is counted exactly once. Mole positions come off a free running 16 bit counter, constrained to the five holes and stopped from picking the same hole twice in a row. Score and time are multiplexed across the eight digit seven segment display at about 381 Hz and drawn again on the VGA screen.',
+    spec:  ['Verilog', 'FPGA', 'VGA', 'Finite state machines', 'Digital logic']
+  },
+  {
+    title: 'Light based IR communication',
     blurb: 'A pair of boards that move data between them over nothing but infrared light.',
     img:   'assets/ir-link.jpg',
     more:  ['assets/ir-link-clip.mp4',
-            'assets/ir-link-2.jpg', 'assets/ir-link-3.jpg'],
-    who:   'Personal project',
+            'assets/ir-link-2.jpg', 'assets/ir-link-3.jpg','assets/ir-link-4.jpg'],
     when:  '2026',
-    body:  'A pair of boards that move data between them over nothing but infrared light. A modulated IR LED on one end, a phototransistor and demodulator on the other, with framing and error checking around the bytes in between. Writeup still to come: the modulation scheme, range testing, and what ambient light does to the error rate.',
+    body:  'A pair of devices that move data between them over nothing but infrared light. A modulated IR LED on one end, a phototransistor and demodulator on the other, with framing and error checking around the bytes in between. Controlled with a keypad, inputs controlling signal sent and transmitter rotation.',
     spec:  ['Analog circuits','Modulation','Microcontrollers','KiCad']
   },
   {
     title: 'Lexus IS300 manual transmission',
     blurb: 'A full SolidWorks model of an IS300 manual gearbox, with FEA run across the assembly.',
-    img:   'assets/is300-transmission.jpg',
-    more:  ['assets/is300-transmission-2.jpg', 'assets/is300-transmission-3.jpg'],
-    who:   'Personal teardown and analysis',
-    when:  'Jun 2025 \u2192 Sep 2025',
+    img:   'assets/is300-transmission-clip.mp4',
+    more:  ['assets/is300-transmission-2.jpg', 'assets/is300-transmission-3.jpg', 'assets/is300-transmission-4.jpg'],
+    when:  'Summer 2025',
     body:  'Modelled the gears, shafts, synchronizers and housing of an IS300 manual gearbox in SolidWorks, then ran FEA across the assembly to look at stress distribution, torque capacity, and where wear actually shows up first.',
     spec:  ['SolidWorks','FEA','GD&amp;T']
   },
   {
     title: 'EKG data processing',
-    blurb: 'Reading an EKG trace and pulling the beats out of it, in Python and MATLAB.',
+    blurb: 'Reading a multitude of EKG traces under varying conditions and pulling the beats out of it, in Python and MATLAB.',
     img:   'assets/ekg-processing.jpg',
     more:  ['assets/ekg-processing-2.jpg', 'assets/ekg-processing-3.jpg'],
-    who:   'FILL IN: course, team or personal project',
-    when:  'FILL IN: when',
+    when:  'Fall 2024',
     body:  'FILL IN: what the signal chain does, how beats are found, and what Python and MATLAB each handled. Numbers carry this kind of project, so put them in if you have them: sample rate, how many records, how well the detection did.',
     spec:  ['Python','MATLAB','Signal processing']
   },
@@ -167,20 +190,20 @@ const PROJECTS = [
     title: 'Temperature sensing box',
     blurb: 'An enclosed sensor box that logs ambient temperature and humidity so a room can be watched over days.',
     img:   'assets/temp-box.jpg',
+    doc:   'assets/temp-box-doc.pdf',
     more:  ['assets/temp-box-2.jpg', 'assets/temp-box-3.jpg'],
-    who:   'Personal project',
     repo:  'roomtempmon',
-    when:  '2025',
-    body:  'A small enclosed sensor box that reads ambient temperature and humidity on a microcontroller and logs the result so a room can be watched over days rather than glanced at. Writeup still to come: enclosure drawings, calibration against a reference thermometer, and the logging format.',
+    when:  'Fall 2025',
+    body:  'A small enclosed sensor box that reads ambient temperature and humidity on a microcontroller and logs the result so a room can be watched over days rather than glanced at.',
     spec:  ['Arduino','Sensor integration','Enclosure design','Data logging']
   },
   {
     title: 'QUARTOR',
     blurb: 'An autonomous quadcopter for disaster response, with thermal imaging and survivor detection from the air.',
     img:   'assets/quartor.jpg',
+    doc:   'assets/quartor-doc.pdf',
     more:  ['assets/quartor-2.jpg', 'assets/quartor-3.jpg'],
-    who:   'Barton Weller Research Scholarship',
-    when:  'Jun 2023 \u2192 Mar 2024',
+    when:  '2023 - 2024',
     body:  'An autonomous quadcopter for disaster response: thermal imaging from the air, plus survivor detection in terrain that is unsafe to walk into. Real-time object recognition ran on YOLOv5 through a Google Colab pipeline to find and track people on the ground.',
     spec:  ['Python','YOLOv5','Autonomy','Thermal imaging']
   },
@@ -188,8 +211,7 @@ const PROJECTS = [
     title: 'FIRST Robotics grappling system',
     blurb: 'The mechanical design and assembly of the grappling mechanism, from CAD through machining.',
     img:   'assets/first-grappler.jpg',
-    more:  ['assets/first-grappler-2.jpg', 'assets/first-grappler-3.jpg'],
-    who:   'Gaelhawks Robotics, 2023 season',
+    more:  ['assets/first-grappler-2.jpg'],
     when:  '2023',
     body:  'Owned the mechanical design and assembly of the grappling mechanism, from CAD through machining. Also ran workshops teaching new members shop machinery and robot design so the knowledge did not leave with the seniors.',
     spec:  ['CAD','CNC','Machining','Mentoring']
