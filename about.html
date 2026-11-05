@@ -17,6 +17,32 @@
 
 <div class="frame" id="frame" aria-hidden="true"></div>
 
+<dialog class="sheet" id="intDlg" aria-labelledby="intTitle">
+  <div class="sheet-head">
+    <span class="sheet-no" id="intNo" aria-live="polite"></span>
+    <button class="sheet-x" id="intX" type="button" aria-label="Close">&#215;</button>
+  </div>
+  <button class="sheet-b prev" id="intPrev" type="button" aria-label="Previous interest">&#8249;</button>
+  <button class="sheet-b next" id="intNext" type="button" aria-label="Next interest">&#8250;</button>
+  <div class="sheet-body">
+    <div class="sheet-grid one">
+      <div class="sheet-tx"><h3 id="intTitle"></h3></div>
+      <div class="sheet-fig" id="intFig"></div>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="lens" id="lens" aria-label="Enlarged view">
+  <button class="shots-b prev" id="lensPrev" type="button" aria-label="Previous picture">&#8249;</button>
+  <button class="shots-b next" id="lensNext" type="button" aria-label="Next picture">&#8250;</button>
+  <div class="lens-box" id="lensBox"></div>
+  <div class="lens-foot">
+    <span id="lensCap"></span>
+    <span class="lens-no" id="lensNo"></span>
+    <button class="lens-x" id="lensX" type="button" aria-label="Close">&#215;</button>
+  </div>
+</dialog>
+
 <div class="stage" id="stage" aria-hidden="true">
   <svg id="arm" xmlns="http://www.w3.org/2000/svg">
     <defs>
@@ -74,6 +100,34 @@
       <div data-target>
         <div class="k">Coursework</div>
         <div class="v"><p class="set">Computational Linear Algebra, CAD, Logic Design, Circuits, Materials Science, Static Mechanics, Signals and Systems, Software Engineering, Thermodynamics, Fluid Mechanics, Manufacturing, Electromagnetics, Control Systems, Electronics, Instrumentation</p></div>
+      </div>
+    </div>
+
+    <div class="sub">Experience</div>
+    <div class="track">
+      <div class="stint" data-target>
+        <div class="st-when">Nov 2025 &rarr; present</div>
+        <div>
+          <h4>Structures and Avionics</h4>
+          <div class="st-org">BU Rocket Propulsion Group</div>
+          <p>More than 12 structural components designed and optimized in CAD and FEA for the liquid propulsion test stand, cutting structural mass by 15% with every load requirement still met. Four test stand assembly cycles and three cold flow and hot fire tests so far, none of them with a structural failure.</p>
+        </div>
+      </div>
+      <div class="stint" data-target>
+        <div class="st-when">Sept 2026 &rarr; present</div>
+        <div>
+          <h4>Hackathon Co-Organizer</h4>
+          <div class="st-org">Boston University UAV Team</div>
+          <p>Monthly UAV hackathons for 40 or more students across 8 to 10 teams, run on a $1,500 semester budget covering venue, judging and three mentor and sponsor relationships. Participation up 150% in two months on the back of three hands-on workshops in flight controllers, CAD and ROS.</p>
+        </div>
+      </div>
+      <div class="stint" data-target>
+        <div class="st-when">Jan 2025 &rarr; present</div>
+        <div>
+          <h4>IT Support Specialist</h4>
+          <div class="st-org">BU Information Services and Technology</div>
+          <p>On-site AV and IT support for more than 100 Registrar classrooms across two campuses, at 15 to 20 tickets a week. Windows, macOS, classroom AV and Crestron control systems, with 90% of issues closed on the first visit and an average response under 10 minutes.</p>
+        </div>
       </div>
     </div>
 
