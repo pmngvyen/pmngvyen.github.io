@@ -1050,34 +1050,46 @@ video[data-tap]{ cursor: pointer; }
 .lens[open]{ display: flex; flex-direction: column; }
 .lens::backdrop{ background: rgba(241, 243, 242, .93); }
 
+/* The note sits above the picture and hard right, outside it, so nothing is
+   written over the thing you opened. The count and the way out keep it
+   company, since all three are the same small mono aside. */
+.lens-head{
+  display: flex; align-items: baseline; justify-content: flex-end;
+  gap: 16px;
+  margin-bottom: 9px;
+  font-family: var(--mono); font-size: .6rem;
+  color: var(--ink-3);
+}
+.lens-no{ letter-spacing: .05em; white-space: nowrap; }
+
+.lens-wrap{ position: relative; display: flex; min-height: 0; }
 .lens-box{
   display: flex;
   min-height: 0;
   border: 1px solid var(--ink);
   background: var(--white);
 }
-.lens-box{ position: relative; }
 .lens-box img, .lens-box video{
   display: block;
   width: auto; height: auto;
-  max-width: calc(100vw - 50px);
-  max-height: calc(100vh - 92px);
+  /* paper is kept either side so the two steps have somewhere to stand that
+     is not on top of the picture */
+  max-width: calc(100vw - 150px);
+  max-height: calc(100vh - 96px);
   object-fit: contain;
 }
 .lens-box img{ cursor: zoom-out; }
 
+/* Out here the steps are back to the bare stroke the sheet uses, because out
+   here there is paper under them. The pair drawn on a plate in a gallery stay
+   as they are: inside a picture a stroke has nothing to read against. */
+.lens .sheet-b{ position: absolute; top: 50%; margin-top: -28px; }
+.lens .sheet-b.prev{ left: -46px; right: auto; }
+.lens .sheet-b.next{ right: -46px; left: auto; }
+
 /* the sheet's own pair sit behind the backdrop in roughly the same place and
    read faintly through it, so they stand down while a picture is open */
 body.lensing .sheet > .sheet-b{ visibility: hidden; }
-
-.lens-foot{
-  display: flex; align-items: baseline;
-  gap: 18px;
-  margin-top: 9px;
-  font-family: var(--mono); font-size: .6rem;
-  color: var(--ink-3);
-}
-.lens-no{ margin-left: auto; letter-spacing: .05em; white-space: nowrap; }
 .lens-x{
   appearance: none; cursor: pointer; line-height: 1;
   font-family: var(--mono); font-size: .85rem;
@@ -1091,11 +1103,13 @@ body.lensing .sheet > .sheet-b{ visibility: hidden; }
 @media (min-width: 760px){
   .sheet-grid.one{ grid-template-columns: minmax(0, 1fr); }
 }
-.sheet-grid.one{ gap: 18px; }
+/* One column, and the column is held to about the width a plate has in a
+   project sheet and set in the middle of the paper, title and all, so the
+   two line up on the same left edge rather than the picture drifting off to
+   one side of its own name. */
+.sheet-grid.one{ gap: 18px; justify-items: center; }
+.sheet-grid.one > *{ width: 100%; max-width: 660px; }
 .sheet-grid.one .sheet-tx h3{ margin-bottom: 0; }
-/* held to about the width the plate has in a project sheet, so an interest
-   reads as the same object and not as a billboard */
-.sheet-grid.one .sheet-fig{ max-width: 660px; }
 
 
 /* ===========================================================
@@ -1123,3 +1137,26 @@ body.lensing .sheet > .sheet-b{ visibility: hidden; }
 .shots-b:focus-visible{ outline: 2px solid var(--mark); outline-offset: 2px; }
 .shots-b.prev{ left: 8px; }
 .shots-b.next{ right: 8px; }
+
+
+/* ===========================================================
+   INTERESTS IN ONE ROW
+   All the same size, side by side. Laying them out across rather than down
+   means the row takes however many interests there are without the count
+   being written down anywhere, and every column is cut to the same width.
+   =========================================================== */
+@media (min-width: 720px){
+  .tiles{
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-rows: auto;
+  }
+}
+/* the spans are what made them different sizes, so they stand down; the
+   shape: lines in content.js can stay or go, they do nothing either way */
+.tile.wide, .tile.tall, .tile.big{ grid-column: auto; grid-row: auto; }
+/* and each plate takes the same proportion rather than filling whatever room
+   its tile happened to be given */
+.tile .figwrap{ flex: none; }
+.tile .plate{ aspect-ratio: 4 / 3; }
