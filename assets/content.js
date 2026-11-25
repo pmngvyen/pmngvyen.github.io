@@ -90,7 +90,7 @@ const PROJECTS = [
     blurb: 'A test controller for a rocket nozzle sample, controlling igition and recording load data.',
     wip: true,
     img:   'assets/nozzle-controller.jpg',
-    more:  [//'assets/nozzle-controller-clip.mp4',
+    more:  ['assets/nozzle-controller-clip.mp4',
             'assets/nozzle-controller-2.jpg', 'assets/nozzle-controller-3.jpg', 'assets/nozzle-controller-4.jpg'],
     when:  'Fall 2026 - Present',
     body:  '',
