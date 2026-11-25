@@ -91,7 +91,7 @@ const PROJECTS = [
     wip: true,
     img:   'assets/nozzle-controller.jpg',
     more:  [//'assets/nozzle-controller-clip.mp4',
-            'assets/nozzle-controller-2.jpg', 'assets/nozzle-controller-3.jpg'],
+            'assets/nozzle-controller-2.jpg', 'assets/nozzle-controller-3.jpg', 'assets/nozzle-controller-4.jpg'],
     when:  'Fall 2026 - Present',
     body:  '',
     spec:  ['Control systems', 'Schematic Design','Instrumentation']
